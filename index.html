@@ -1,0 +1,1582 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jelajah Benua - IPAS Kelas 6 (Versi Terbaru)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* TEMA FUTURISTIK: LATAR BELAKANG GELAP, AKSEN NEON (CYAN) */
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #0f172a; /* Slate-950 Dark Background */
+            color: #e2e8f0; /* Default light text */
+        }
+
+        /* Mode Terang */
+        body.light-theme {
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        
+        /* Kartu Konten */
+        .card { 
+            @apply bg-slate-800 p-6 rounded-3xl shadow-2xl shadow-cyan-500/30 border border-cyan-700/50 transition duration-300; 
+        }
+        
+        body.light-theme .card {
+            @apply bg-white shadow-slate-200 border-slate-200;
+        }
+        
+        /* Desain Tombol Navigasi Utama (Neon) */
+        .nav-btn {
+            @apply bg-slate-700 text-cyan-400 py-3 px-6 rounded-full font-extrabold text-sm uppercase tracking-widest 
+                   shadow-xl transition duration-200 transform 
+                   /* Border Cyan */
+                   border-2 border-cyan-400 
+                   /* Hover: Shadow glow */
+                   hover:bg-slate-600 hover:text-white hover:shadow-cyan-400/50 
+                   /* Active (Klik): Neon Hijau dengan shadow glow */
+                   active:bg-green-500 active:text-slate-900 active:border-green-400 active:shadow-green-500/70 active:scale-[0.98] 
+                   focus:outline-none focus:ring-4 focus:ring-cyan-500/50;
+        }
+        
+        body.light-theme .nav-btn {
+            @apply bg-slate-200 text-cyan-700 hover:bg-slate-300 hover:text-cyan-800;
+        }
+
+        /* Tombol Aksi Primer */
+        .btn-primary { 
+            @apply bg-cyan-600 text-slate-900 py-2 px-4 rounded-xl font-semibold hover:bg-cyan-500 transition duration-150 shadow-md; 
+        }
+
+        /* Tombol Aksi Sekunder (Dark theme) */
+        .btn-secondary { 
+            @apply bg-slate-700 text-gray-200 py-2 px-4 rounded-xl font-semibold hover:bg-slate-600 transition duration-150 border border-slate-600; 
+        }
+        
+        body.light-theme .btn-secondary {
+            @apply bg-slate-200 text-slate-700 hover:bg-slate-300 border-slate-300;
+        }
+        
+        .continent-map-item {
+            cursor: pointer;
+            @apply p-4 m-2 text-center text-sm font-bold text-white rounded-xl shadow-lg transition transform hover:scale-105;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Custom scrollbar for better look */
+        .custom-scroll::-webkit-scrollbar { width: 8px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: #334155; }
+        .custom-scroll { scrollbar-width: thin; scrollbar-color: #1e293b transparent; }
+        
+        body.light-theme .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; }
+        body.light-theme .custom-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        body.light-theme .custom-scroll { scrollbar-color: #cbd5e1 transparent; }
+        
+        /* Badge Achievement */
+        .badge {
+            @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-bold;
+        }
+        
+        .badge-bronze {
+            @apply bg-yellow-800 text-yellow-200;
+        }
+        
+        .badge-silver {
+            @apply bg-gray-600 text-gray-200;
+        }
+        
+        .badge-gold {
+            @apply bg-yellow-600 text-yellow-100;
+        }
+        
+        /* Peta SVG */
+        .continent-path {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .continent-path:hover {
+            filter: brightness(1.2);
+            transform: scale(1.02);
+        }
+        
+        /* Timer untuk kuis */
+        .quiz-timer {
+            @apply absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full font-bold;
+        }
+        
+        /* Pencarian - PERUBAHAN WARNA TEKS MENJADI BIRU */
+        .search-box {
+            @apply w-full p-3 rounded-xl bg-slate-700 text-blue-400 border border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-400;
+        }
+        
+        .search-box::placeholder {
+            color: #93c5fd; /* Biru muda untuk placeholder */
+        }
+        
+        body.light-theme .search-box {
+            @apply bg-white text-blue-600 border-slate-300 focus:ring-cyan-500;
+        }
+        
+        body.light-theme .search-box::placeholder {
+            color: #3b82f6; /* Biru untuk placeholder di mode terang */
+        }
+        
+        /* Audio control */
+        .audio-control {
+            @apply fixed bottom-4 right-4 bg-cyan-600 text-white p-3 rounded-full shadow-lg cursor-pointer hover:bg-cyan-500 transition;
+        }
+        
+        /* Audio control active state */
+        .audio-control.active {
+            @apply bg-green-600 animate-pulse;
+        }
+        
+        /* Image gallery */
+        .image-gallery {
+            @apply grid grid-cols-1 md:grid-cols-3 gap-4 mb-6;
+        }
+        
+        .gallery-item {
+            @apply rounded-xl overflow-hidden shadow-lg transition transform hover:scale-105 cursor-pointer;
+        }
+        
+        /* Text to speech button */
+        .speak-btn {
+            @apply inline-flex items-center ml-2 text-blue-400 hover:text-blue-300 cursor-pointer transition;
+        }
+        
+        body.light-theme .speak-btn {
+            @apply text-blue-600 hover:text-blue-500;
+        }
+        
+        .speak-btn.active {
+            @apply text-green-400 animate-pulse;
+        }
+        
+        body.light-theme .speak-btn.active {
+            @apply text-green-600;
+        }
+        
+        /* Audio status indicator */
+        .audio-status {
+            @apply fixed bottom-20 right-4 bg-slate-800 text-white px-4 py-2 rounded-lg shadow-lg text-sm;
+            z-40;
+        }
+        
+        body.light-theme .audio-status {
+            @apply bg-white text-slate-800;
+        }
+        
+        /* Audio test button */
+        .audio-test-btn {
+            @apply mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-500 transition;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <!-- Audio Status Indicator -->
+    <div id="audioStatus" class="audio-status hidden">
+        <i class="fas fa-volume-up mr-2"></i>
+        <span id="audioStatusText">Memuat audio...</span>
+    </div>
+
+    <!-- Audio Control -->
+    <div class="audio-control" id="audioControl" onclick="toggleAudio()">
+        <i class="fas fa-volume-up text-xl"></i>
+    </div>
+
+    <div id="app" class="max-w-4xl mx-auto">
+        <!-- Header Aplikasi -->
+        <header class="text-center mb-10">
+            <!-- Warna Header Neon Cyan -->
+            <h1 class="text-5xl font-extrabold text-cyan-400 drop-shadow-lg shadow-cyan-400/50">
+                🌍 Jelajah Benua 🧭
+                <span class="speak-btn" onclick="speakText('Jelajah Benua, IPAS Kelas 6: Pelesir Keliling Dunia')">
+                    <i class="fas fa-volume-up"></i>
+                </span>
+            </h1>
+            <p class="text-gray-400 mt-2 text-lg">
+                IPAS Kelas 6: Pelesir Keliling Dunia
+                <span class="speak-btn" onclick="speakText('IPAS Kelas 6: Pelesir Keliling Dunia')">
+                    <i class="fas fa-volume-up"></i>
+                </span>
+            </p>
+            
+            <!-- Theme Toggle -->
+            <button onclick="toggleTheme()" class="mt-4 text-gray-400 hover:text-white">
+                <i id="themeIcon" class="fas fa-moon text-xl"></i>
+            </button>
+        </header>
+
+        <!-- Area Navigasi Utama dengan Efek Baru -->
+        <nav id="main-nav" class="mb-8 flex flex-wrap justify-center gap-4">
+            <button onclick="navigate('home')" class="nav-btn">Peta Interaktif</button>
+            <button onclick="navigate('quiz')" class="nav-btn">Quiz Benua</button>
+            <button onclick="navigate('compare')" class="nav-btn">Perbandingan Benua</button>
+            <button onclick="navigate('achievements')" class="nav-btn">Pencapaian</button>
+        </nav>
+
+        <!-- Pencarian -->
+        <div class="mb-6">
+            <input type="text" id="searchInput" placeholder="Cari informasi tentang benua..." 
+                   class="search-box" onkeyup="searchContent()">
+        </div>
+
+        <!-- Area Konten Dinamis -->
+        <div id="content-area" class="card min-h-[500px] custom-scroll overflow-y-auto">
+            <!-- Konten akan dimuat di sini oleh JavaScript -->
+            <h2 class="text-2xl font-bold text-gray-400 mb-4 text-center">Memuat Konten...</h2>
+        </div>
+    </div>
+
+    <script>
+        // --- Data Konten Benua (Diperbarui dengan informasi lebih lengkap) ---
+        const benuaData = {
+            // ASIA: KUNING
+            Asia: {
+                color: 'bg-yellow-500', 
+                urutan: 'Terbesar ke-1',
+                fakta: 'Benua terluas dan terpadat di dunia (sekitar 30% daratan Bumi).',
+                geografis: 'Terdapat Pegunungan Himalaya, puncak tertinggi dunia (Mt. Everest), dan gurun Gobi.',
+                budaya: 'Asal-usul peradaban kuno (China, India), memiliki Tembok Besar China.',
+                populasi: '4.7 Miliar',
+                luas: '44.6 Juta km²',
+                iklim: 'Beragam dari tropis di tenggara hingga subartik di utara',
+                flora: 'Bambu, pohon teh, mangrove, dan berbagai spesies bunga sakura',
+                fauna: 'Harimau, gajah asia, panda, komodo, dan orangutan',
+                // Gambar ikonik untuk Asia
+                gambar: 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80', // Tembok Besar China
+                galeri: [
+                    'https://images.unsplash.com/photo-1544735716-392fe2489ffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80', // Gunung Fuji
+                    'https://images.unsplash.com/photo-1526392060635-9d6019884377?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80', // Taj Mahal
+                    'https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80' // Pagoda
+                ],
+                ikon: 'Tembok Besar China'
+            },
+            // AMERIKA: MERAH
+            Amerika: {
+                color: 'bg-red-600', 
+                urutan: 'Terbesar ke-2',
+                fakta: 'Terbagi menjadi Amerika Utara, Tengah, dan Selatan. Ditemukan oleh bangsa Eropa (Amerigo Vespucci).',
+                geografis: 'Terdapat Pegunungan Andes, Sungai Amazon (terpanjang), dan Gurun Atacama (terkering).',
+                budaya: 'Pusat Kebudayaan Modern (Hollywood), asal-usul Tari Samba dan Tango.',
+                populasi: '1.0 Miliar',
+                luas: '42.5 Juta km²',
+                iklim: 'Dari kutub utara hingga tropis di selatan',
+                flora: 'Pohon oak, maple, kaktus, dan hutan hujan Amazon',
+                fauna: 'Beruang grizzly, bison, jaguar, llama, dan alpaka',
+                // Gambar ikonik untuk Amerika
+                gambar: 'https://images.unsplash.com/photo-1587595431973-160d0d94add1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80', // Machu Picchu
+                galeri: [
+                    'https://images.unsplash.com/photo-1485738422979-f5c462d49f74?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80', // Patung Liberty
+                    'https://images.unsplash.com/photo-1534447677768-be436bb09401?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80', // Grand Canyon
+                    'https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80' // Hutan Amazon
+                ],
+                ikon: 'Machu Picchu'
+            },
+            // AFRIKA: HITAM
+            Afrika: {
+                color: 'bg-gray-900', 
+                urutan: 'Terbesar ke-3',
+                fakta: 'Benua dengan jumlah negara terbanyak (lebih dari 50 negara). Dijuluki "Benua Hitam".',
+                geografis: 'Terdapat Gurun Sahara (terbesar), Sungai Nil (terpanjang), dan Hutan Kongo.',
+                budaya: 'Situs Piramida Giza (Mesir), tempat asal usul manusia purba.',
+                populasi: '1.4 Miliar',
+                luas: '30.3 Juta km²',
+                iklim: 'Sebagian besar tropis dan subtropis dengan gurun di utara',
+                flora: 'Pohon baobab, akasia, dan berbagai spesies kaktus',
+                fauna: 'Singa, gajah afrika, jerapah, zebra, dan gorila',
+                // Gambar ikonik untuk Afrika
+                gambar: 'https://images.unsplash.com/photo-1539650116574-8efeb43e2750?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80', // Piramida Giza
+                galeri: [
+                    'https://images.unsplash.com/photo-1516426122078-c23e76319801?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80', // Gurun Sahara
+                    'https://images.unsplash.com/photo-1514626585111-9aa86183ac0c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80', // Sungai Nil
+                    'https://images.unsplash.com/photo-1518837695005-2083093ee35b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80' // Savana Afrika
+                ],
+                ikon: 'Piramida Giza'
+            },
+            // ANTARTIKA: ABU-ABU
+            Antartika: {
+                color: 'bg-gray-700', 
+                urutan: 'Terbesar ke-4',
+                fakta: 'Benua paling dingin dan berangin. Tidak memiliki penduduk tetap, hanya stasiun penelitian.',
+                geografis: 'Sekitar 98% wilayah tertutup es. Suhu terendah tercatat $-89.2^{\circ} \text{C}$.',
+                budaya: 'Zona bebas, diatur oleh Perjanjian Antartika.',
+                populasi: '0 (Musiman: ~5.000 peneliti)',
+                luas: '14.2 Juta km²',
+                iklim: 'Polar dengan suhu ekstrem dingin sepanjang tahun',
+                flora: 'Mosses, lichens, dan alga (hanya di daerah bebas es)',
+                fauna: 'Penguin, anjing laut, paus, dan burung laut',
+                // Gambar ikonik untuk Antartika
+                gambar: 'https://images.unsplash.com/photo-1551632811-561732d1e306?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80', // Pemandangan es dan penguin
+                galeri: [
+                    'https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80', // Gletser
+                    'https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80', // Penguin (Foto kedua diganti dengan penguin)
+                    'https://images.unsplash.com/photo-1612422548559-2b68d4428134?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80' // Stasiun penelitian
+                ],
+                ikon: 'Penguin dan Es Abadi'
+            },
+            // EROPA: BIRU
+            Eropa: {
+                color: 'bg-blue-600', 
+                urutan: 'Terbesar ke-5',
+                fakta: 'Benua yang menyatu dengan Asia (disebut Eurasia). Satu-satunya benua tanpa gurun besar.',
+                geografis: 'Terdapat Pegunungan Alpen dan Sungai Rhine. Sebagian besar negara tergabung dalam Uni Eropa.',
+                budaya: 'Pusat Revolusi Industri, Menara Eiffel (Prancis), dan Koloseum (Italia).',
+                populasi: '750 Juta',
+                luas: '10.2 Juta km²',
+                iklim: 'Sebagian besar iklim sedang dengan empat musim',
+                flora: 'Pohon oak, beech, dan berbagai spesies bunga',
+                fauna: 'Rusa merah, serigala, beruang cokelat, dan rubah',
+                // Gambar ikonik untuk Eropa
+                gambar: 'https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80', // Menara Eiffel
+                galeri: [
+                    'https://images.unsplash.com/photo-1552832230-c0197dd311b5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80', // Koloseum
+                    'https://images.unsplash.com/photo-1529655683826-aba9b3e77383?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80', // Big Ben
+                    'https://images.unsplash.com/photo-1555109309-fcd3ed6ee3a1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80' // Santorini
+                ],
+                ikon: 'Menara Eiffel'
+            },
+            // AUSTRALIA: HIJAU
+            Australia: {
+                color: 'bg-green-500', 
+                urutan: 'Terbesar ke-6',
+                fakta: 'Benua terkecil di dunia. Dikenal sebagai negara-benua (benua yang hanya ditempati satu negara besar).',
+                geografis: 'Terdapat Gurun Gibson dan Great Barrier Reef (terumbu karang terbesar).',
+                budaya: 'Dikenal sebagai "Negeri Kangguru". Penduduk asli adalah suku Aborigin.',
+                populasi: '43 Juta',
+                luas: '7.6 Juta km²',
+                iklim: 'Sebagian besar gurun dan semi-gurun dengan iklim tropis di utara',
+                flora: 'Eukaliptus, akasia, dan berbagai spesies tanaman unik',
+                fauna: 'Kangguru, koala, wombat, platypus, dan tasmanian devil',
+                // Gambar ikonik untuk Australia
+                gambar: 'https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80', // Sydney Opera House
+                galeri: [
+                    'https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80', // Great Barrier Reef
+                    'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80', // Ayers Rock
+                    'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80' // Kangguru
+                ],
+                ikon: 'Sydney Opera House'
+            }
+        };
+
+        // --- Data Kuis (Diperbanyak menjadi 10 soal) ---
+        const quizData = [
+            {
+                type: 'pilihan_ganda',
+                question: 'Benua terbesar dan terpadat di dunia adalah?',
+                options: ['Amerika', 'Asia', 'Afrika', 'Eropa'],
+                answer: 'Asia',
+                keterangan: 'Benua Asia mencakup sekitar 30% dari total luas daratan Bumi.',
+            },
+            {
+                type: 'pilihan_ganda',
+                question: 'Gurun Sahara dan Sungai Nil, kenampakan alam terkenal ini berada di benua?',
+                options: ['Asia', 'Amerika', 'Afrika', 'Australia'],
+                answer: 'Afrika',
+                keterangan: 'Gurun Sahara adalah gurun terbesar di dunia, dan Sungai Nil adalah sungai terpanjang di dunia.',
+            },
+            {
+                type: 'pilihan_ganda',
+                question: 'Benua yang hampir seluruhnya tertutup es dan tidak memiliki penduduk tetap adalah?',
+                options: ['Eropa', 'Antartika', 'Amerika', 'Australia'],
+                answer: 'Antartika',
+                keterangan: 'Antartika adalah benua di Kutub Selatan yang dikhususkan untuk penelitian.',
+            },
+            {
+                type: 'pilihan_ganda',
+                question: 'Negara-benua (benua yang hanya ditempati satu negara besar) adalah julukan untuk?',
+                options: ['Eropa', 'Amerika', 'Asia', 'Australia'],
+                answer: 'Australia',
+                keterangan: 'Benua Australia adalah benua terkecil yang wilayahnya hanya ditempati oleh Negara Australia.',
+            },
+            {
+                type: 'pilihan_ganda',
+                question: 'Benua yang memiliki Pegunungan Alpen dan merupakan pusat Revolusi Industri adalah?',
+                options: ['Amerika', 'Eropa', 'Asia', 'Afrika'],
+                answer: 'Eropa',
+                keterangan: 'Eropa memiliki Pegunungan Alpen dan dikenal sebagai tempat lahirnya Revolusi Industri.',
+            },
+            {
+                type: 'pilihan_ganda',
+                question: 'Sungai Amazon dan Pegunungan Andes yang terkenal berada di benua?',
+                options: ['Amerika', 'Asia', 'Afrika', 'Australia'],
+                answer: 'Amerika',
+                keterangan: 'Sungai Amazon (di Amerika Selatan) dan Pegunungan Andes (di Amerika Selatan) adalah kenampakan alam utama di Benua Amerika.',
+            },
+            {
+                type: 'pilihan_ganda',
+                question: 'Benua yang dikenal sebagai habitat Marsupialia (hewan berkantung) seperti kangguru adalah?',
+                options: ['Afrika', 'Asia', 'Australia', 'Antartika'],
+                answer: 'Australia',
+                keterangan: 'Marsupialia adalah hewan khas yang banyak ditemukan di Benua Australia.',
+            },
+            {
+                type: 'pilihan_ganda',
+                question: 'Benua manakah yang memiliki jumlah penduduk paling sedikit?',
+                options: ['Eropa', 'Australia', 'Antartika', 'Amerika'],
+                answer: 'Antartika',
+                keterangan: 'Antartika tidak memiliki penduduk tetap, hanya ditempati peneliti musiman.',
+            },
+            {
+                type: 'pilihan_ganda',
+                question: 'Satu-satunya benua yang tidak memiliki gurun berukuran besar adalah?',
+                options: ['Asia', 'Eropa', 'Afrika', 'Amerika'],
+                answer: 'Eropa',
+                keterangan: 'Eropa merupakan satu-satunya benua yang tidak memiliki gurun pasir yang signifikan.',
+            },
+            {
+                type: 'pilihan_ganda',
+                question: 'Benua yang perbatasannya menyatu dengan Benua Asia (disebut Eurasia) adalah?',
+                options: ['Afrika', 'Eropa', 'Amerika', 'Australia'],
+                answer: 'Eropa',
+                keterangan: 'Secara geologis, Eropa dan Asia terletak pada lempeng benua yang sama dan sering disebut Eurasia.',
+            },
+        ];
+
+        // --- Data Pencapaian ---
+        const achievements = [
+            { id: 'explorer', name: 'Penjelajah', description: 'Mengunjungi semua benua', icon: 'fa-compass', class: 'badge-bronze' },
+            { id: 'quiz_master', name: 'Master Kuis', description: 'Mendapat skor sempurna di kuis', icon: 'fa-trophy', class: 'badge-silver' },
+            { id: 'geography_expert', name: 'Ahli Geografi', description: 'Menyelesaikan semua aktivitas', icon: 'fa-globe', class: 'badge-gold' },
+            { id: 'fast_learner', name: 'Pembelajar Cepat', description: 'Menyelesaikan kuis dalam waktu kurang dari 2 menit', icon: 'fa-bolt', class: 'badge-bronze' },
+        ];
+
+        // --- State Aplikasi ---
+        let currentState = {
+            currentView: 'home', // 'home', 'detail', 'quiz', 'compare', 'achievements'
+            selectedBenua: null,
+            quizScore: 0,
+            quizStep: 0,
+            quizResult: null,
+            quizStartTime: null,
+            compareBenua: { benua1: 'Asia', benua2: 'Amerika' },
+            visitedContinents: [],
+            achievements: [],
+            theme: 'dark',
+            audioEnabled: false,
+            currentUtterance: null,
+            availableVoices: [],
+            audioTested: false
+        };
+
+        // Load saved state from localStorage
+        function loadState() {
+            const savedState = localStorage.getItem('jelajahBenuaState');
+            if (savedState) {
+                currentState = { ...currentState, ...JSON.parse(savedState) };
+            }
+            
+            // Apply theme
+            if (currentState.theme === 'light') {
+                document.body.classList.add('light-theme');
+                document.getElementById('themeIcon').classList.remove('fa-moon');
+                document.getElementById('themeIcon').classList.add('fa-sun');
+            }
+            
+            // Load voices when available
+            if ('speechSynthesis' in window) {
+                speechSynthesis.onvoiceschanged = function() {
+                    currentState.availableVoices = speechSynthesis.getVoices();
+                    console.log('Available voices:', currentState.availableVoices.filter(v => v.lang.includes('id')));
+                };
+            }
+        }
+
+        // Save state to localStorage
+        function saveState() {
+            localStorage.setItem('jelajahBenuaState', JSON.stringify({
+                visitedContinents: currentState.visitedContinents,
+                achievements: currentState.achievements,
+                theme: currentState.theme
+            }));
+        }
+
+        const contentArea = document.getElementById('content-area');
+
+        // --- Fungsi Navigasi ---
+        function navigate(view, benua = null) {
+            currentState.currentView = view;
+            if (view === 'detail') {
+                currentState.selectedBenua = benua;
+                // Track visited continents
+                if (!currentState.visitedContinents.includes(benua)) {
+                    currentState.visitedContinents.push(benua);
+                    saveState();
+                    checkAchievements();
+                }
+            } else if (view === 'quiz') {
+                currentState.quizStep = 0;
+                currentState.quizScore = 0;
+                currentState.quizResult = null;
+                currentState.quizStartTime = new Date();
+            }
+            render();
+        }
+
+        // --- Fungsi Render View ---
+
+        // 1. Render Home (Peta Interaktif)
+        function renderHome() {
+            const benuaKeys = Object.keys(benuaData);
+            let mapHtml = benuaKeys.map(key => {
+                const data = benuaData[key];
+                return `
+                    <div class="continent-map-item ${data.color} cursor-pointer" onclick="navigate('detail', '${key}')">
+                        ${key}
+                        <span class="text-xs font-normal mt-1 block">(${data.urutan})</span>
+                    </div>
+                `;
+            }).join('');
+
+            contentArea.innerHTML = `
+                <h2 class="text-2xl font-extrabold text-center text-cyan-400 mb-6">
+                    Peta Interaktif (Simulasi)
+                    <span class="speak-btn" onclick="speakText('Peta Interaktif Simulasi')">
+                        <i class="fas fa-volume-up"></i>
+                    </span>
+                </h2>
+                <p class="text-center text-gray-400 mb-6">
+                    Sentuh/Klik nama benua di bawah untuk melihat detail karakteristiknya!
+                    <span class="speak-btn" onclick="speakText('Sentuh atau Klik nama benua di bawah untuk melihat detail karakteristiknya')">
+                        <i class="fas fa-volume-up"></i>
+                    </span>
+                </p>
+                
+                <!-- Audio Test Section -->
+                <div class="mb-6 p-4 bg-slate-900 rounded-xl">
+                    <h3 class="text-lg font-bold text-cyan-400 mb-2">Uji Coba Audio</h3>
+                    <p class="text-gray-300 mb-3">Jika audio tidak berfungsi, klik tombol di bawah untuk menguji fitur text-to-speech:</p>
+                    <button onclick="testAudio()" class="audio-test-btn">
+                        <i class="fas fa-volume-up mr-2"></i> Uji Audio
+                    </button>
+                    <div id="audioTestResult" class="mt-2 text-sm text-gray-400"></div>
+                </div>
+                
+                <!-- Peta SVG Sederhana -->
+                <div class="mb-8 bg-slate-900 rounded-2xl p-4 border border-slate-700">
+                    <svg viewBox="0 0 800 400" class="w-full h-64">
+                        <!-- Asia -->
+                        <path d="M500,100 L600,80 L650,120 L620,180 L550,200 L500,150 Z" 
+                              fill="${benuaData.Asia.color.replace('bg-', '')}" 
+                              class="continent-path" 
+                              onclick="navigate('detail', 'Asia')"
+                              title="Asia">
+                        </path>
+                        
+                        <!-- Amerika -->
+                        <path d="M150,100 L200,80 L220,150 L180,200 L150,180 L130,130 Z" 
+                              fill="${benuaData.Amerika.color.replace('bg-', '')}" 
+                              class="continent-path" 
+                              onclick="navigate('detail', 'Amerika')"
+                              title="Amerika">
+                        </path>
+                        
+                        <!-- Afrika -->
+                        <path d="M350,150 L400,130 L420,200 L380,250 L350,230 L330,180 Z" 
+                              fill="${benuaData.Afrika.color.replace('bg-', '')}" 
+                              class="continent-path" 
+                              onclick="navigate('detail', 'Afrika')"
+                              title="Afrika">
+                        </path>
+                        
+                        <!-- Eropa -->
+                        <path d="M400,80 L450,70 L470,120 L430,130 L400,110 Z" 
+                              fill="${benuaData.Eropa.color.replace('bg-', '')}" 
+                              class="continent-path" 
+                              onclick="navigate('detail', 'Eropa')"
+                              title="Eropa">
+                        </path>
+                        
+                        <!-- Australia -->
+                        <path d="M600,250 L650,240 L670,280 L630,300 L600,280 Z" 
+                              fill="${benuaData.Australia.color.replace('bg-', '')}" 
+                              class="continent-path" 
+                              onclick="navigate('detail', 'Australia')"
+                              title="Australia">
+                        </path>
+                        
+                        <!-- Antartika -->
+                        <path d="M300,320 L500,310 L520,350 L280,360 Z" 
+                              fill="${benuaData.Antartika.color.replace('bg-', '')}" 
+                              class="continent-path" 
+                              onclick="navigate('detail', 'Antartika')"
+                              title="Antartika">
+                        </path>
+                    </svg>
+                </div>
+                
+                <!-- Container peta dengan latar belakang gelap -->
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4 p-4 bg-slate-900 rounded-2xl shadow-inner border border-slate-700">
+                    ${mapHtml}
+                </div>
+            `;
+        }
+
+        // 2. Render Detail (Galeri Benua)
+        function renderDetail() {
+            const benua = currentState.selectedBenua;
+            if (!benua) {
+                navigate('home');
+                return;
+            }
+            const data = benuaData[benua];
+            
+            // Generate gallery HTML
+            let galleryHtml = '';
+            if (data.galeri && data.galeri.length > 0) {
+                galleryHtml = data.galeri.map((img, index) => `
+                    <div class="gallery-item" onclick="openImageModal('${img}', '${data.ikon} - Gambar ${index + 1}')">
+                        <img src="${img}" alt="${data.ikon} - Gambar ${index + 1}" class="w-full h-32 object-cover">
+                    </div>
+                `).join('');
+            }
+
+            contentArea.innerHTML = `
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-3xl font-extrabold text-cyan-400">
+                        ${benua}
+                        <span class="speak-btn" onclick="speakText('${benua}')">
+                            <i class="fas fa-volume-up"></i>
+                        </span>
+                    </h2>
+                    <button onclick="navigate('home')" class="btn-secondary flex items-center gap-1">
+                        <span class="text-xl">🏠</span> Kembali ke Peta
+                    </button>
+                </div>
+                
+                <!-- Gambar Ikonik Benua -->
+                <div class="mb-6 rounded-2xl overflow-hidden shadow-lg">
+                    <img src="${data.gambar}" alt="${data.ikon}" class="w-full h-64 object-cover">
+                    <div class="bg-slate-900 bg-opacity-70 text-white p-3 text-center">
+                        <p class="font-bold">
+                            ${data.ikon}
+                            <span class="speak-btn" onclick="speakText('${data.ikon}')">
+                                <i class="fas fa-volume-up"></i>
+                            </span>
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Galeri Gambar Tambahan -->
+                ${galleryHtml ? `
+                    <div class="mb-6">
+                        <h3 class="text-lg font-bold text-cyan-400 mb-3">
+                            Galeri ${benua}
+                            <span class="speak-btn" onclick="speakText('Galeri ${benua}')">
+                                <i class="fas fa-volume-up"></i>
+                            </span>
+                        </h3>
+                        <div class="image-gallery">
+                            ${galleryHtml}
+                        </div>
+                    </div>
+                ` : ''}
+                
+                <div class="mb-6 p-4 ${data.color} text-white rounded-2xl shadow-md">
+                    <p class="text-xl font-bold">
+                        ${data.urutan} di dunia.
+                        <span class="speak-btn" onclick="speakText('${data.urutan} di dunia')">
+                            <i class="fas fa-volume-up"></i>
+                        </span>
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Fakta Kunci (Dark theme) -->
+                    <div class="bg-cyan-950 p-4 rounded-xl border-l-4 border-cyan-500 shadow-sm">
+                        <h3 class="font-bold text-xl text-cyan-400 mb-2">
+                            Fakta Kunci
+                            <span class="speak-btn" onclick="speakText('Fakta Kunci')">
+                                <i class="fas fa-volume-up"></i>
+                            </span>
+                        </h3>
+                        <p class="text-gray-200">
+                            ${data.fakta}
+                            <span class="speak-btn" onclick="speakText('${data.fakta}')">
+                                <i class="fas fa-volume-up"></i>
+                            </span>
+                        </p>
+                        <ul class="mt-3 text-sm text-gray-300">
+                            <li>
+                                <strong>Luas:</strong> ${data.luas}
+                                <span class="speak-btn" onclick="speakText('Luas: ${data.luas}')">
+                                    <i class="fas fa-volume-up"></i>
+                                </span>
+                            </li>
+                            <li>
+                                <strong>Populasi:</strong> ${data.populasi}
+                                <span class="speak-btn" onclick="speakText('Populasi: ${data.populasi}')">
+                                    <i class="fas fa-volume-up"></i>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Geografis (Dark theme) -->
+                    <div class="bg-slate-700 p-4 rounded-xl border-l-4 border-teal-500 shadow-sm">
+                        <h3 class="font-bold text-xl text-teal-300 mb-2">
+                            Kenampakan Geografis
+                            <span class="speak-btn" onclick="speakText('Kenampakan Geografis')">
+                                <i class="fas fa-volume-up"></i>
+                            </span>
+                        </h3>
+                        <p class="text-gray-200">
+                            ${data.geografis}
+                            <span class="speak-btn" onclick="speakText('${data.geografis}')">
+                                <i class="fas fa-volume-up"></i>
+                            </span>
+                        </p>
+                    </div>
+
+                    <!-- Iklim -->
+                    <div class="bg-slate-700 p-4 rounded-xl border-l-4 border-yellow-500 shadow-sm">
+                        <h3 class="font-bold text-xl text-yellow-300 mb-2">
+                            Iklim
+                            <span class="speak-btn" onclick="speakText('Iklim')">
+                                <i class="fas fa-volume-up"></i>
+                            </span>
+                        </h3>
+                        <p class="text-gray-200">
+                            ${data.iklim}
+                            <span class="speak-btn" onclick="speakText('${data.iklim}')">
+                                <i class="fas fa-volume-up"></i>
+                            </span>
+                        </p>
+                    </div>
+
+                    <!-- Flora -->
+                    <div class="bg-slate-700 p-4 rounded-xl border-l-4 border-green-500 shadow-sm">
+                        <h3 class="font-bold text-xl text-green-300 mb-2">
+                            Flora Khas
+                            <span class="speak-btn" onclick="speakText('Flora Khas')">
+                                <i class="fas fa-volume-up"></i>
+                            </span>
+                        </h3>
+                        <p class="text-gray-200">
+                            ${data.flora}
+                            <span class="speak-btn" onclick="speakText('${data.flora}')">
+                                <i class="fas fa-volume-up"></i>
+                            </span>
+                        </p>
+                    </div>
+
+                    <!-- Fauna -->
+                    <div class="bg-slate-700 p-4 rounded-xl border-l-4 border-purple-500 shadow-sm">
+                        <h3 class="font-bold text-xl text-purple-300 mb-2">
+                            Fauna Khas
+                            <span class="speak-btn" onclick="speakText('Fauna Khas')">
+                                <i class="fas fa-volume-up"></i>
+                            </span>
+                        </h3>
+                        <p class="text-gray-200">
+                            ${data.fauna}
+                            <span class="speak-btn" onclick="speakText('${data.fauna}')">
+                                <i class="fas fa-volume-up"></i>
+                            </span>
+                        </p>
+                    </div>
+
+                    <!-- Budaya (Dark theme) -->
+                    <div class="bg-slate-700 p-4 rounded-xl border-l-4 border-pink-500 shadow-sm">
+                        <h3 class="font-bold text-xl text-pink-300 mb-2">
+                            Keunikan Budaya & Ciri Khas
+                            <span class="speak-btn" onclick="speakText('Keunikan Budaya dan Ciri Khas')">
+                                <i class="fas fa-volume-up"></i>
+                            </span>
+                        </h3>
+                        <p class="text-gray-200">
+                            ${data.budaya}
+                            <span class="speak-btn" onclick="speakText('${data.budaya}')">
+                                <i class="fas fa-volume-up"></i>
+                            </span>
+                        </p>
+                        <p class="mt-2 text-sm text-gray-400 italic">
+                            Ini adalah contoh keunikan, seperti Piramida Mesir (Afrika) atau Tembok Besar (Asia).
+                            <span class="speak-btn" onclick="speakText('Ini adalah contoh keunikan, seperti Piramida Mesir di Afrika atau Tembok Besar di Asia')">
+                                <i class="fas fa-volume-up"></i>
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Fungsi untuk membuka modal gambar
+        function openImageModal(imageSrc, imageTitle) {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4';
+            modal.onclick = function() {
+                document.body.removeChild(modal);
+            };
+            
+            modal.innerHTML = `
+                <div class="max-w-4xl max-h-[90vh] overflow-auto">
+                    <img src="${imageSrc}" alt="${imageTitle}" class="max-w-full max-h-[80vh] object-contain">
+                    <div class="text-center text-white mt-4 text-xl font-bold">
+                        ${imageTitle}
+                        <span class="speak-btn" onclick="speakText('${imageTitle}')">
+                            <i class="fas fa-volume-up"></i>
+                        </span>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        // 3. Render Quiz
+        function renderQuiz() {
+            if (currentState.quizResult) {
+                renderQuizResult();
+                return;
+            }
+
+            const currentQuiz = quizData[currentState.quizStep];
+            if (!currentQuiz) {
+                // Semua soal selesai
+                const endTime = new Date();
+                const timeTaken = Math.floor((endTime - currentState.quizStartTime) / 1000);
+                
+                currentState.quizResult = { 
+                    score: currentState.quizScore, 
+                    total: quizData.length,
+                    timeTaken: timeTaken
+                };
+                
+                checkQuizAchievements();
+                renderQuizResult();
+                return;
+            }
+
+            let optionsHtml = '';
+            currentQuiz.options.forEach((option, index) => {
+                optionsHtml += `
+                    <button class="w-full text-left btn-secondary mt-3 p-3 text-lg rounded-xl hover:bg-slate-600 hover:ring-2 hover:ring-cyan-400 transition" 
+                            onclick="checkAnswer('${option}')">
+                        ${String.fromCharCode(65 + index)}. ${option}
+                    </button>
+                `;
+            });
+
+            contentArea.innerHTML = `
+                <div class="relative">
+                    <h2 class="text-2xl font-extrabold text-center text-cyan-400 mb-6">
+                        Quiz Benua: Pilihan Ganda
+                        <span class="speak-btn" onclick="speakText('Quiz Benua: Pilihan Ganda')">
+                            <i class="fas fa-volume-up"></i>
+                        </span>
+                    </h2>
+                    <div class="text-sm font-semibold text-gray-400 mb-4 text-center">
+                        Soal ${currentState.quizStep + 1} dari ${quizData.length}
+                        <span class="speak-btn" onclick="speakText('Soal ${currentState.quizStep + 1} dari ${quizData.length}')">
+                            <i class="fas fa-volume-up"></i>
+                        </span>
+                    </div>
+                    
+                    <!-- Timer -->
+                    <div id="quiz-timer" class="quiz-timer">
+                        <i class="fas fa-clock mr-1"></i> <span id="timer-value">0:00</span>
+                    </div>
+                </div>
+                
+                <!-- Kotak Pertanyaan Dark Theme -->
+                <div class="bg-slate-700 p-6 rounded-2xl border-2 border-cyan-400 shadow-md">
+                    <p class="text-xl font-bold text-gray-100">
+                        ${currentQuiz.question}
+                        <span class="speak-btn" onclick="speakText('${currentQuiz.question}')">
+                            <i class="fas fa-volume-up"></i>
+                        </span>
+                    </p>
+                </div>
+                
+                <div id="quiz-options" class="mt-4 space-y-2">
+                    ${optionsHtml}
+                </div>
+                
+                <div id="quiz-feedback" class="mt-6 p-4 rounded-xl text-center font-bold hidden"></div>
+            `;
+            
+            // Start timer
+            startQuizTimer();
+        }
+
+        let quizTimer;
+        
+        function startQuizTimer() {
+            clearInterval(quizTimer);
+            const startTime = new Date();
+            
+            quizTimer = setInterval(() => {
+                const elapsed = Math.floor((new Date() - startTime) / 1000);
+                const minutes = Math.floor(elapsed / 60);
+                const seconds = elapsed % 60;
+                document.getElementById('timer-value').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function checkAnswer(selectedOption) {
+            clearInterval(quizTimer);
+            
+            const currentQuiz = quizData[currentState.quizStep];
+            const feedbackDiv = document.getElementById('quiz-feedback');
+            const optionsDiv = document.getElementById('quiz-options');
+            
+            // Disable all buttons
+            optionsDiv.querySelectorAll('button').forEach(btn => btn.disabled = true);
+
+            if (selectedOption === currentQuiz.answer) {
+                currentState.quizScore++;
+                // Feedback Benar (Glow Hijau)
+                feedbackDiv.className = 'mt-6 p-4 bg-green-900/50 text-green-400 rounded-xl text-center font-bold shadow-inner border border-green-700';
+                feedbackDiv.innerHTML = `🎉 Benar! Skor bertambah. Keterangan: ${currentQuiz.keterangan}
+                    <span class="speak-btn" onclick="speakText('Benar! Skor bertambah. Keterangan: ${currentQuiz.keterangan}')">
+                        <i class="fas fa-volume-up"></i>
+                    </span>`;
+            } else {
+                // Feedback Salah (Glow Merah)
+                feedbackDiv.className = 'mt-6 p-4 bg-red-900/50 text-red-400 rounded-xl text-center font-bold shadow-inner border border-red-700';
+                feedbackDiv.innerHTML = `😔 Salah. Jawaban yang benar adalah **${currentQuiz.answer}**. Keterangan: ${currentQuiz.keterangan}
+                    <span class="speak-btn" onclick="speakText('Salah. Jawaban yang benar adalah ${currentQuiz.answer}. Keterangan: ${currentQuiz.keterangan}')">
+                        <i class="fas fa-volume-up"></i>
+                    </span>`;
+            }
+            feedbackDiv.style.display = 'block';
+
+            // Add Next Button
+            setTimeout(() => {
+                const nextBtn = document.createElement('button');
+                nextBtn.className = 'btn-primary w-full mt-4';
+                nextBtn.textContent = (currentState.quizStep + 1) === quizData.length ? 'Lihat Hasil Akhir >>' : 'Soal Selanjutnya >>';
+                nextBtn.onclick = () => {
+                    currentState.quizStep++;
+                    renderQuiz();
+                };
+                feedbackDiv.appendChild(nextBtn);
+            }, 1000);
+        }
+
+        function checkQuizAchievements() {
+            const { score, total, timeTaken } = currentState.quizResult;
+            
+            // Perfect score achievement
+            if (score === total && !currentState.achievements.includes('quiz_master')) {
+                currentState.achievements.push('quiz_master');
+                saveState();
+                showAchievementNotification('Master Kuis', 'Anda mendapat skor sempurna di kuis!');
+            }
+            
+            // Fast learner achievement
+            if (timeTaken < 120 && !currentState.achievements.includes('fast_learner')) {
+                currentState.achievements.push('fast_learner');
+                saveState();
+                showAchievementNotification('Pembelajar Cepat', 'Anda menyelesaikan kuis dalam waktu kurang dari 2 menit!');
+            }
+        }
+
+        function showAchievementNotification(title, description) {
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 bg-yellow-500 text-slate-900 p-4 rounded-xl shadow-lg z-50 animate-pulse';
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas fa-trophy text-2xl mr-3"></i>
+                    <div>
+                        <div class="font-bold">${title}</div>
+                        <div class="text-sm">${description}</div>
+                    </div>
+                    <span class="speak-btn ml-3" onclick="speakText('${title}. ${description}')">
+                        <i class="fas fa-volume-up"></i>
+                    </span>
+                </div>
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        function renderQuizResult() {
+            const { score, total, timeTaken } = currentState.quizResult;
+            const percentage = Math.round((score / total) * 100);
+            const minutes = Math.floor(timeTaken / 60);
+            const seconds = timeTaken % 60;
+
+            let message = '';
+            if (percentage === 100) {
+                message = 'Hebat! Kamu menguasai materi 6 Benua!';
+            } else if (percentage >= 70) {
+                message = 'Bagus! Sedikit lagi menuju sempurna.';
+            } else {
+                message = 'Terus semangat belajar! Coba ulangi kuisnya setelah membaca materi.';
+            }
+
+            contentArea.innerHTML = `
+                <h2 class="text-3xl font-extrabold text-center text-cyan-400 mb-6">
+                    Hasil Kuis Anda
+                    <span class="speak-btn" onclick="speakText('Hasil Kuis Anda')">
+                        <i class="fas fa-volume-up"></i>
+                    </span>
+                </h2>
+                <!-- Hasil Dark Theme -->
+                <div class="text-center p-8 bg-slate-700 rounded-2xl shadow-xl border border-cyan-400">
+                    <p class="text-2xl font-extrabold text-gray-200">
+                        Skor Anda:
+                        <span class="speak-btn" onclick="speakText('Skor Anda')">
+                            <i class="fas fa-volume-up"></i>
+                        </span>
+                    </p>
+                    <div class="text-6xl font-extrabold text-teal-400 my-3">${score}/${total}</div>
+                    <div class="text-3xl text-gray-300">(${percentage}%)</div>
+                    <p class="text-xl mt-4 font-semibold text-cyan-300">
+                        ${message}
+                        <span class="speak-btn" onclick="speakText('${message}')">
+                            <i class="fas fa-volume-up"></i>
+                        </span>
+                    </p>
+                    <p class="text-lg mt-2 text-gray-300">
+                        Waktu: ${minutes}:${seconds.toString().padStart(2, '0')}
+                        <span class="speak-btn" onclick="speakText('Waktu: ${minutes} menit ${seconds} detik')">
+                            <i class="fas fa-volume-up"></i>
+                        </span>
+                    </p>
+                    
+                    <button onclick="navigate('quiz')" class="btn-primary mt-8 mr-3">Ulangi Kuis</button>
+                    <button onclick="navigate('home')" class="btn-secondary mt-8">Kembali ke Peta</button>
+                </div>
+            `;
+        }
+
+        // 4. Render Compare (Perbandingan Benua)
+        function renderCompare() {
+            const { benua1, benua2 } = currentState.compareBenua;
+            const data1 = benuaData[benua1];
+            const data2 = benuaData[benua2];
+            const benuaKeys = Object.keys(benuaData);
+
+            contentArea.innerHTML = `
+                <h2 class="text-2xl font-extrabold text-center text-cyan-400 mb-6">
+                    Perbandingan Benua
+                    <span class="speak-btn" onclick="speakText('Perbandingan Benua')">
+                        <i class="fas fa-volume-up"></i>
+                    </span>
+                </h2>
+                <p class="text-center text-gray-400 mb-6">
+                    Pilih dua benua di bawah untuk melihat perbandingan faktanya.
+                    <span class="speak-btn" onclick="speakText('Pilih dua benua di bawah untuk melihat perbandingan faktanya')">
+                        <i class="fas fa-volume-up"></i>
+                    </span>
+                </p>
+
+                <!-- Pemilih Benua Dark Theme -->
+                <div class="flex flex-col md:flex-row justify-center gap-4 mb-8 p-4 bg-slate-900 rounded-xl shadow-inner border border-slate-700">
+                    <div class="flex-1">
+                        <label class="block text-sm font-bold text-gray-400 mb-1">
+                            Benua 1
+                            <span class="speak-btn" onclick="speakText('Benua 1')">
+                                <i class="fas fa-volume-up"></i>
+                            </span>
+                        </label>
+                        <select id="select-benua-1" onchange="updateCompare('benua1', this.value)" class="w-full p-2 border border-cyan-500 bg-slate-800 text-white rounded-lg focus:ring-cyan-500 focus:border-cyan-500">
+                            ${benuaKeys.map(key => `<option value="${key}" ${key === benua1 ? 'selected' : ''}>${key}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-sm font-bold text-gray-400 mb-1">
+                            Benua 2
+                            <span class="speak-btn" onclick="speakText('Benua 2')">
+                                <i class="fas fa-volume-up"></i>
+                            </span>
+                        </label>
+                        <select id="select-benua-2" onchange="updateCompare('benua2', this.value)" class="w-full p-2 border border-cyan-500 bg-slate-800 text-white rounded-lg focus:ring-cyan-500 focus:border-cyan-500">
+                            ${benuaKeys.map(key => `<option value="${key}" ${key === benua2 ? 'selected' : ''}>${key}</option>`).join('')}
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Tabel Perbandingan Dark Theme -->
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-slate-800 border border-slate-700 rounded-2xl shadow-xl">
+                        <thead class="bg-cyan-800 text-white">
+                            <tr>
+                                <th class="py-3 px-4 text-left rounded-tl-2xl">
+                                    Karakteristik
+                                    <span class="speak-btn" onclick="speakText('Karakteristik')">
+                                        <i class="fas fa-volume-up"></i>
+                                    </span>
+                                </th>
+                                <!-- Kolom header benua menggunakan warna ilustrasi -->
+                                <th class="py-3 px-4 text-center ${data1.color}">
+                                    ${benua1}
+                                    <span class="speak-btn" onclick="speakText('${benua1}')">
+                                        <i class="fas fa-volume-up"></i>
+                                    </span>
+                                </th>
+                                <th class="py-3 px-4 text-center ${data2.color} rounded-tr-2xl">
+                                    ${benua2}
+                                    <span class="speak-btn" onclick="speakText('${benua2}')">
+                                        <i class="fas fa-volume-up"></i>
+                                    </span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${generateComparisonRow('Ikon', data1.ikon, data2.ikon)}
+                            ${generateComparisonRow('Urutan Luas', data1.urutan, data2.urutan)}
+                            ${generateComparisonRow('Luas Wilayah', data1.luas, data2.luas)}
+                            ${generateComparisonRow('Perkiraan Populasi', data1.populasi, data2.populasi)}
+                            ${generateComparisonRow('Fakta Unik', data1.fakta, data2.fakta)}
+                            ${generateComparisonRow('Iklim', data1.iklim, data2.iklim)}
+                            ${generateComparisonRow('Flora Khas', data1.flora, data2.flora)}
+                            ${generateComparisonRow('Fauna Khas', data1.fauna, data2.fauna)}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function generateComparisonRow(label, value1, value2) {
+            return `
+                <tr class="border-b border-slate-700 hover:bg-slate-700">
+                    <td class="py-4 px-4 font-semibold text-gray-100">
+                        ${label}
+                        <span class="speak-btn" onclick="speakText('${label}')">
+                            <i class="fas fa-volume-up"></i>
+                        </span>
+                    </td>
+                    <td class="py-4 px-4 text-center text-sm text-gray-200">
+                        ${value1}
+                        <span class="speak-btn" onclick="speakText('${value1}')">
+                            <i class="fas fa-volume-up"></i>
+                        </span>
+                    </td>
+                    <td class="py-4 px-4 text-center text-sm text-gray-200">
+                        ${value2}
+                        <span class="speak-btn" onclick="speakText('${value2}')">
+                            <i class="fas fa-volume-up"></i>
+                        </span>
+                    </td>
+                </tr>
+            `;
+        }
+
+        // 5. Render Achievements
+        function renderAchievements() {
+            let achievementsHtml = '';
+            
+            achievements.forEach(achievement => {
+                const isUnlocked = currentState.achievements.includes(achievement.id);
+                achievementsHtml += `
+                    <div class="p-4 rounded-xl ${isUnlocked ? 'bg-slate-700 border border-cyan-500' : 'bg-slate-900 opacity-50'} mb-4">
+                        <div class="flex items-center">
+                            <div class="mr-4">
+                                <i class="fas ${achievement.icon} text-3xl ${isUnlocked ? 'text-cyan-400' : 'text-gray-600'}"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="font-bold text-lg ${isUnlocked ? 'text-white' : 'text-gray-500'}">
+                                    ${achievement.name}
+                                    <span class="speak-btn" onclick="speakText('${achievement.name}')">
+                                        <i class="fas fa-volume-up"></i>
+                                    </span>
+                                </h3>
+                                <p class="text-sm ${isUnlocked ? 'text-gray-300' : 'text-gray-600'}">
+                                    ${achievement.description}
+                                    <span class="speak-btn" onclick="speakText('${achievement.description}')">
+                                        <i class="fas fa-volume-up"></i>
+                                    </span>
+                                </p>
+                            </div>
+                            <div>
+                                ${isUnlocked ? 
+                                    `<span class="${achievement.class} badge"><i class="fas fa-check mr-1"></i> Terbuka</span>` : 
+                                    `<span class="bg-gray-800 text-gray-600 badge"><i class="fas fa-lock mr-1"></i> Terkunci</span>`
+                                }
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            contentArea.innerHTML = `
+                <h2 class="text-2xl font-extrabold text-center text-cyan-400 mb-6">
+                    Pencapaian Anda
+                    <span class="speak-btn" onclick="speakText('Pencapaian Anda')">
+                        <i class="fas fa-volume-up"></i>
+                    </span>
+                </h2>
+                <p class="text-center text-gray-400 mb-6">
+                    Kumpulkan semua pencapaian dengan menyelesaikan berbagai aktivitas!
+                    <span class="speak-btn" onclick="speakText('Kumpulkan semua pencapaian dengan menyelesaikan berbagai aktivitas')">
+                        <i class="fas fa-volume-up"></i>
+                    </span>
+                </p>
+                
+                <div class="mb-6 p-4 bg-slate-900 rounded-xl">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-lg font-bold text-white">
+                                Progress Anda
+                                <span class="speak-btn" onclick="speakText('Progress Anda')">
+                                    <i class="fas fa-volume-up"></i>
+                                </span>
+                            </p>
+                            <p class="text-gray-400">
+                                ${currentState.achievements.length} dari ${achievements.length} pencapaian
+                                <span class="speak-btn" onclick="speakText('${currentState.achievements.length} dari ${achievements.length} pencapaian')">
+                                    <i class="fas fa-volume-up"></i>
+                                </span>
+                            </p>
+                        </div>
+                        <div class="w-16 h-16 rounded-full border-4 border-cyan-500 flex items-center justify-center">
+                            <span class="text-xl font-bold text-cyan-400">${Math.round((currentState.achievements.length / achievements.length) * 100)}%</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 w-full bg-slate-700 rounded-full h-2.5">
+                        <div class="bg-cyan-500 h-2.5 rounded-full" style="width: ${(currentState.achievements.length / achievements.length) * 100}%"></div>
+                    </div>
+                </div>
+                
+                <div>
+                    ${achievementsHtml}
+                </div>
+                
+                <div class="text-center mt-8">
+                    <button onclick="navigate('home')" class="btn-primary">Kembali ke Peta</button>
+                </div>
+            `;
+        }
+
+        function checkAchievements() {
+            // Explorer achievement
+            if (currentState.visitedContinents.length === Object.keys(benuaData).length && 
+                !currentState.achievements.includes('explorer')) {
+                currentState.achievements.push('explorer');
+                saveState();
+                showAchievementNotification('Penjelajah', 'Anda telah mengunjungi semua benua!');
+            }
+            
+            // Geography expert achievement
+            if (currentState.visitedContinents.length === Object.keys(benuaData).length && 
+                currentState.achievements.includes('quiz_master') && 
+                !currentState.achievements.includes('geography_expert')) {
+                currentState.achievements.push('geography_expert');
+                saveState();
+                showAchievementNotification('Ahli Geografi', 'Anda telah menyelesaikan semua aktivitas!');
+            }
+        }
+
+        // --- Fungsi Helper untuk Perbandingan ---
+        function updateCompare(key, value) {
+            currentState.compareBenua[key] = value;
+            render();
+        }
+
+        // --- Fungsi Tema ---
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('themeIcon');
+            
+            if (body.classList.contains('light-theme')) {
+                body.classList.remove('light-theme');
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+                currentState.theme = 'dark';
+            } else {
+                body.classList.add('light-theme');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+                currentState.theme = 'light';
+            }
+            
+            saveState();
+        }
+
+        // --- Fungsi Pencarian ---
+        function searchContent() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            if (searchTerm.length < 2) {
+                renderHome();
+                return;
+            }
+            
+            let resultsHtml = '';
+            let hasResults = false;
+            
+            Object.keys(benuaData).forEach(benua => {
+                const data = benuaData[benua];
+                
+                // Check if search term matches any data
+                if (
+                    benua.toLowerCase().includes(searchTerm) ||
+                    data.fakta.toLowerCase().includes(searchTerm) ||
+                    data.geografis.toLowerCase().includes(searchTerm) ||
+                    data.budaya.toLowerCase().includes(searchTerm) ||
+                    data.iklim.toLowerCase().includes(searchTerm) ||
+                    data.flora.toLowerCase().includes(searchTerm) ||
+                    data.fauna.toLowerCase().includes(searchTerm) ||
+                    data.ikon.toLowerCase().includes(searchTerm)
+                ) {
+                    hasResults = true;
+                    resultsHtml += `
+                        <div class="p-4 bg-slate-700 rounded-xl mb-4 border-l-4 border-cyan-500">
+                            <div class="flex items-start">
+                                <img src="${data.gambar}" alt="${data.ikon}" class="w-24 h-24 object-cover rounded-lg mr-4">
+                                <div class="flex-1">
+                                    <h3 class="text-xl font-bold text-cyan-400 mb-2">
+                                        ${benua}
+                                        <span class="speak-btn" onclick="speakText('${benua}')">
+                                            <i class="fas fa-volume-up"></i>
+                                        </span>
+                                    </h3>
+                                    <p class="text-gray-300 mb-2">
+                                        ${data.ikon}
+                                        <span class="speak-btn" onclick="speakText('${data.ikon}')">
+                                            <i class="fas fa-volume-up"></i>
+                                        </span>
+                                    </p>
+                                    <p class="text-gray-300">
+                                        ${data.fakta}
+                                        <span class="speak-btn" onclick="speakText('${data.fakta}')">
+                                            <i class="fas fa-volume-up"></i>
+                                        </span>
+                                    </p>
+                                    <button onclick="navigate('detail', '${benua}')" class="mt-3 btn-primary">Lihat Detail</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            
+            contentArea.innerHTML = `
+                <h2 class="text-2xl font-extrabold text-center text-cyan-400 mb-6">
+                    Hasil Pencarian
+                    <span class="speak-btn" onclick="speakText('Hasil Pencarian')">
+                        <i class="fas fa-volume-up"></i>
+                    </span>
+                </h2>
+                <p class="text-center text-gray-400 mb-6">
+                    Hasil pencarian untuk: "<span class="text-blue-400">${searchTerm}</span>"
+                    <span class="speak-btn" onclick="speakText('Hasil pencarian untuk: ${searchTerm}')">
+                        <i class="fas fa-volume-up"></i>
+                    </span>
+                </p>
+                
+                ${hasResults ? resultsHtml : `
+                    <div class="text-center py-10">
+                        <i class="fas fa-search text-5xl text-gray-600 mb-4"></i>
+                        <p class="text-xl text-gray-400">Tidak ditemukan hasil untuk pencarian Anda</p>
+                        <button onclick="document.getElementById('searchInput').value=''; searchContent();" class="mt-4 btn-secondary">Reset Pencarian</button>
+                    </div>
+                `}
+            `;
+        }
+
+        // --- Fungsi Audio ---
+        function toggleAudio() {
+            // Check if browser supports speech synthesis
+            if (!('speechSynthesis' in window)) {
+                showAudioStatus('Browser Anda tidak mendukung fitur text-to-speech', 'error');
+                return;
+            }
+            
+            currentState.audioEnabled = !currentState.audioEnabled;
+            const audioControl = document.getElementById('audioControl');
+            const audioIcon = audioControl.querySelector('i');
+            
+            if (currentState.audioEnabled) {
+                audioIcon.classList.remove('fa-volume-up');
+                audioIcon.classList.add('fa-volume-mute');
+                audioControl.classList.add('active');
+                speakText('Mode audio diaktifkan. Sekarang Anda bisa mendengar narasi untuk setiap konten dengan mengklik ikon speaker di samping teks.');
+            } else {
+                audioIcon.classList.remove('fa-volume-mute');
+                audioIcon.classList.add('fa-volume-up');
+                audioControl.classList.remove('active');
+                if ('speechSynthesis' in window) {
+                    speechSynthesis.cancel();
+                }
+                showAudioStatus('Mode audio dinonaktifkan', 'info');
+            }
+        }
+
+        function testAudio() {
+            const testResult = document.getElementById('audioTestResult');
+            
+            // Check if browser supports speech synthesis
+            if (!('speechSynthesis' in window)) {
+                testResult.innerHTML = '<span class="text-red-400">Browser Anda tidak mendukung fitur text-to-speech</span>';
+                return;
+            }
+            
+            // Try to get voices
+            const voices = speechSynthesis.getVoices();
+            const indonesianVoices = voices.filter(voice => 
+                voice.lang.includes('id') || voice.name.includes('Indonesian')
+            );
+            
+            if (indonesianVoices.length === 0) {
+                testResult.innerHTML = '<span class="text-yellow-400">Tidak ditemukan voice berbahasa Indonesia</span>';
+            } else {
+                testResult.innerHTML = `<span class="text-green-400">Ditemukan ${indonesianVoices.length} voice berbahasa Indonesia</span>`;
+            }
+            
+            // Test speaking
+            currentState.audioEnabled = true;
+            speakText('Ini adalah uji coba fitur text-to-speech. Jika Anda mendengar suara ini, berarti fitur audio berfungsi dengan baik.');
+        }
+
+        function speakText(text) {
+            // Check if audio is enabled and browser supports speech synthesis
+            if (!currentState.audioEnabled || !('speechSynthesis' in window)) {
+                if (!('speechSynthesis' in window)) {
+                    showAudioStatus('Browser Anda tidak mendukung fitur text-to-speech', 'error');
+                }
+                return;
+            }
+            
+            // Hentikan pembacaan sebelumnya jika ada
+            speechSynthesis.cancel();
+            
+            // Update all speak buttons to show active state
+            document.querySelectorAll('.speak-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show loading status
+            showAudioStatus('Memuat suara...', 'loading');
+            
+            // Create utterance
+            const utterance = new SpeechSynthesisUtterance(text);
+            
+            // Set language to Indonesian
+            utterance.lang = 'id-ID';
+            
+            // Set voice parameters
+            utterance.rate = 0.9;
+            utterance.pitch = 1;
+            utterance.volume = 1;
+            
+            // Try to find Indonesian voice
+            if (currentState.availableVoices.length > 0) {
+                const indonesianVoice = currentState.availableVoices.find(voice => 
+                    voice.lang.includes('id') || voice.name.includes('Indonesian')
+                );
+                if (indonesianVoice) {
+                    utterance.voice = indonesianVoice;
+                }
+            }
+            
+            // Set up event handlers
+            utterance.onstart = function() {
+                showAudioStatus('Sedang membaca...', 'speaking');
+                // Add active class to the button that triggered this
+                if (event.target && event.target.closest) {
+                    const button = event.target.closest('.speak-btn');
+                    if (button) {
+                        button.classList.add('active');
+                    }
+                }
+            };
+            
+            utterance.onend = function() {
+                hideAudioStatus();
+                // Remove active class from all buttons
+                document.querySelectorAll('.speak-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+            };
+            
+            utterance.onerror = function(event) {
+                console.error('Speech synthesis error:', event.error);
+                showAudioStatus('Terjadi kesalahan saat memutar suara', 'error');
+                document.querySelectorAll('.speak-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+            };
+            
+            // Speak the text
+            try {
+                speechSynthesis.speak(utterance);
+                currentState.currentUtterance = utterance;
+            } catch (error) {
+                console.error('Error speaking text:', error);
+                showAudioStatus('Terjadi kesalahan saat memutar suara', 'error');
+            }
+        }
+
+        function showAudioStatus(message, type = 'info') {
+            const statusElement = document.getElementById('audioStatus');
+            const statusTextElement = document.getElementById('audioStatusText');
+            
+            statusTextElement.textContent = message;
+            statusElement.classList.remove('hidden');
+            
+            // Update icon based on type
+            const icon = statusElement.querySelector('i');
+            icon.className = type === 'error' ? 'fas fa-exclamation-triangle mr-2' : 
+                             type === 'loading' ? 'fas fa-spinner fa-spin mr-2' : 
+                             'fas fa-volume-up mr-2';
+            
+            // Auto hide after 3 seconds for info messages
+            if (type === 'info') {
+                setTimeout(hideAudioStatus, 3000);
+            }
+        }
+
+        function hideAudioStatus() {
+            const statusElement = document.getElementById('audioStatus');
+            statusElement.classList.add('hidden');
+        }
+
+        // --- Fungsi Render Utama ---
+        function render() {
+            // Scroll to top when view changes
+            contentArea.scrollTop = 0;
+
+            switch (currentState.currentView) {
+                case 'home':
+                    renderHome();
+                    break;
+                case 'detail':
+                    renderDetail();
+                    break;
+                case 'quiz':
+                    renderQuiz();
+                    break;
+                case 'compare':
+                    renderCompare();
+                    break;
+                case 'achievements':
+                    renderAchievements();
+                    break;
+                default:
+                    renderHome();
+            }
+        }
+
+        // Inisialisasi Aplikasi
+        window.onload = () => {
+            // Load saved state
+            loadState();
+            
+            // Set default comparison benua if they are the same
+            if (currentState.compareBenua.benua1 === currentState.compareBenua.benua2) {
+                currentState.compareBenua = { benua1: 'Asia', benua2: 'Amerika' };
+            }
+            
+            render();
+        };
+    </script>
+</body>
+</html>
